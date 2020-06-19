@@ -16,12 +16,17 @@ mandatory: True
 code: |
   set_preconditions
   basic_questions_intro_screen
-  A_affidavit_disclosing_care_or_custody_proceedings0009_intro
+  intro
   users[0].name.first
   user_needs_interpreter
+  other_parties[0].name.first
+  confidential_address_reasons
+  other_care_custody_proceedings.there_are_any =  custody_case_participation != "no cases"
   A_affidavit_disclosing_care_or_custody_proceedings0009
   evaluate_child_addresses
   trigger_aff_care_or_custody_computed_variables
+  users[0].address.geolocate()
+  all_matches = macourts.matching_courts([users[0].address], court_types=allowed_courts)
   courts[0]
   fill_in_court_name
   preview_screen
@@ -37,6 +42,27 @@ code: |
 ---
 code: |
   children_of_both = children
+---
+continue button field: intro
+question: |
+  Affidavit Disclosing Care or Custody
+subquestion: |
+  This form helps you complete an "Affidavit Disclosing
+  Care or Custody Proceedings".
+  
+  The main purpose of this form is to find out about any open or 
+  closed cases related to the care and/or custody of your 
+  children. This helps the court get a better picture of your 
+  childrens’ situations. You may have to complete this form
+  even if you do not have any cases to tell the court about.
+  
+  You will need to answer questions about
+  
+  * past cases
+  * the names of people who currently represent you, the other 
+  party, or your children, and
+  * the address and contact information for you, the other
+  party, and your children
 ---  
 id: name of other party
 question: |
@@ -143,3 +169,78 @@ attachment:
     - dummy: dummy
   name: Affidavit Disclosing Care or Custody Proceedings
 section: download
+---
+sets:
+  - courts[0]
+id: choose a court
+question: |
+  What court is your case in?
+subquestion: |
+  % if len(all_matches) > 0:
+  Below is a map of the ${comma_and_list(allowed_courts)} court(s) that serve the
+  address you gave us, ${users[0].address.on_one_line()}.
+  
+  ${map_of(combined_locations(all_matches))}
+  % endif
+
+  If you are filing a new case, choose the .
+fields:
+  - no label: courts[0]
+    datatype: object_radio
+    choices: all_matches
+    none of the above: True
+    disable others: True
+    object labeler: |
+      lambda y: '**' + str(y) +' (' + y.address.city + ')**' + '[BR]' + y.address.on_one_line() + '[BR]' + y.description
+  - note: |
+      Does the list above look wrong? If you think you should file in a
+      court we didn't list, choose from the full list below.
+    show if: 
+      code: |
+        len(all_matches)
+  - no label: courts[0]
+    datatype: object
+    object labeler: |
+      lambda y: (str(y) +' (' + y.address.city + ')') if y.address.city not in str(y) else str(y)
+    choices: macourts    
+help: 
+  label: |
+    How do I pick a court?
+  content: |
+    If you are responding to a case someone else filed, you may not
+    get to choose your court. Select the court that is already
+    listed on your court paperwork. 
+    
+    But if you are starting a new case, you have
+    a choice. How do you know which court to choose?
+  
+    Massachusetts has 5 trial court departments that hear family law cases:
+    
+    * District Court
+    * Boston Municipal Court (BMC)
+    * Superior Court
+    * Probate and Family Court
+    * Juvenile Court
+    
+    The District Court, BMC, and Superior Court are all courts that can hear
+    any type of case. Probate and Family and Juvenile Court are
+    both **specialist** courts that hear one kind of case.
+    They have may have judges with special training as well as special 
+    resources available.
+    
+    Different courts can make different kinds of decisions. Not every court
+    can give you every kind of help. For example, you can only
+    ask for visitation in the Probate and Family Court.
+    
+    Depending on where you live, different courts may be further or closer to
+    your address. There are about 100 district courts all over the state,
+    but each county has only one or a few Superior Courts or specialty
+    courts.
+    
+    Choosing a court means thinking about what kind of help you need, as well
+    as which court you can get transportation to on the day of your hearing.
+    
+    Only you know the right choice.
+    
+    You can also view the court selection guidance at [mass.gov](https://www.mass.gov/courthouse-locator).
+    

@@ -1482,9 +1482,9 @@ attachment:
       - "child2_name_last_first": ${ children_of_both.item(1).name.lastfirst() }
       - "child3_name_last_first": ${ children_of_both.item(2).name.lastfirst() }
       - "confidential_address": ${ confidential_address }
-      - "child1_past_addresses_on_one_line": ${ children_of_both.item(0).past_addresses_on_one_line if not confidential_address else '' } 
-      - "child2_past_addresses_on_one_line": ${ children_of_both.item(1).past_addresses_on_one_line if not confidential_address else '' }
-      - "child3_past_addresses_on_one_line": ${ children_of_both.item(2).past_addresses_on_one_line if not confidential_address else '' }
+      - "child1_past_addresses_on_one_line": ${ children_of_both.item(0).previous_addresses if not confidential_address else '' } 
+      - "child2_past_addresses_on_one_line": ${ children_of_both.item(1).previous_addresses if not confidential_address else '' }
+      - "child3_past_addresses_on_one_line": ${ children_of_both.item(2).previous_addresses if not confidential_address else '' }
       - "has_participated_custody_case": ${ has_participated_custody_case }
       - "has_not_participated_custody_case": ${ not has_participated_custody_case }
       - "know_of_other_custody_case": ${ know_of_other_custody_case }
@@ -1594,9 +1594,9 @@ attachment:
       - "child2_name_last_first": ${ children_of_both.item(1).name.lastfirst() }
       - "child3_name_last_first": ${ children_of_both.item(2).name.lastfirst() }
       - "confidential_address": ${ confidential_address }
-      - "child1_past_addresses_on_one_line": ${ children_of_both.item(0).past_addresses_on_one_line if not confidential_address else '' } 
-      - "child2_past_addresses_on_one_line": ${ children_of_both.item(1).past_addresses_on_one_line if not confidential_address else '' }
-      - "child3_past_addresses_on_one_line": ${ children_of_both.item(2).past_addresses_on_one_line if not confidential_address else '' }
+      - "child1_past_addresses_on_one_line": ${ children_of_both.item(0).previous_addresses if not confidential_address else '' } 
+      - "child2_past_addresses_on_one_line": ${ children_of_both.item(1).previous_addresses if not confidential_address else '' }
+      - "child3_past_addresses_on_one_line": ${ children_of_both.item(2).previous_addresses if not confidential_address else '' }
       - "has_participated_custody_case": ${ has_participated_custody_case }
       - "has_not_participated_custody_case": ${ not has_participated_custody_case }
       - "know_of_other_custody_case": ${ know_of_other_custody_case }
