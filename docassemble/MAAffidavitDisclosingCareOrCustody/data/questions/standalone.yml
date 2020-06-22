@@ -182,8 +182,6 @@ subquestion: |
   
   ${map_of(combined_locations(all_matches))}
   % endif
-
-  If you are filing a new case, choose the .
 fields:
   - no label: courts[0]
     datatype: object_radio
