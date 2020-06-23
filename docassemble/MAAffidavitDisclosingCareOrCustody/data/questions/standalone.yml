@@ -29,6 +29,7 @@ code: |
   all_matches = macourts.matching_courts([users[0].address], court_types=allowed_courts)
   courts[0]
   fill_in_court_name
+  users[0].mobile_number
   preview_screen
   basic_questions_signature_flow
   download
@@ -56,7 +57,7 @@ subquestion: |
   childrens’ situations. You may have to complete this form
   even if you do not have any cases to tell the court about.
   
-  You will need to answer questions about
+  You will need to answer questions about:
   
   * past cases
   * the names of people who currently represent you, the other 
@@ -132,7 +133,7 @@ subquestion: |
   Thank you ${users[0]}. Your form is ready to send to the court. **It is not
   delivered until you complete the delivery process below.**
 
-  1. Click the preview image below to open the form in a new window. Correct any errors using the "Make changes" button below.
+  1. Click the preview image below to open the form in a new window. Correct any errors by using the back button. (Note: this will erase your progress).
   1. Download and save or print a copy of this form for your 
   records.
   1. Click the "Submit to ${courts[0]}" button to send it to the court. 
@@ -147,9 +148,7 @@ subquestion: |
   % endif
   
   ${ form_to_file_no_cover }  
-  
-  ${action_button_html(url_action('review_all_sections'), icon='edit', label=word("Make changes"))}
-  
+    
   % if not defined('email_success') or not email_success:
     ${ action_button_html( url_action('form_delivery_complete'), id_tag="submitToCourt", label="Submit to " + str(courts[0].name), icon=send_icon, size="md", color="primary")}
     
@@ -159,15 +158,16 @@ subquestion: |
     
   [:file-download: Download with cover page](${final_form_to_file.url_for()})    
   % endif
+#   ${action_button_html(url_action('review_all_sections'), icon='edit', label=word("Make changes"))}
 progress: 100
-attachment:
-  pdf template file: 
-    code: |
-      form_to_file_no_cover
-  filename: "Affidavit disclosing care or custody proceedings"
-  fields:
-    - dummy: dummy
-  name: Affidavit Disclosing Care or Custody Proceedings
+#attachment:
+#  pdf template file: 
+#    code: |
+#      form_to_file_no_cover
+#  filename: "Affidavit disclosing care or custody proceedings"
+#  fields:
+#    - dummy: dummy
+#  name: Affidavit Disclosing Care or Custody Proceedings
 section: download
 ---
 sets:
@@ -177,8 +177,8 @@ question: |
   What court is your case in?
 subquestion: |
   % if len(all_matches) > 0:
-  Below is a map of the ${comma_and_list(allowed_courts)} court(s) that serve the
-  address you gave us, ${users[0].address.on_one_line()}.
+  Below is a map of the court(s) that serve
+  the address you gave us, ${users[0].address.on_one_line()}.
   
   ${map_of(combined_locations(all_matches))}
   % endif
@@ -223,7 +223,7 @@ help:
     The District Court, BMC, and Superior Court are all courts that can hear
     any type of case. Probate and Family and Juvenile Court are
     both **specialist** courts that hear one kind of case.
-    They have may have judges with special training as well as special 
+    They have judges with special training as well as special 
     resources available.
     
     Different courts can make different kinds of decisions. Not every court
@@ -241,4 +241,19 @@ help:
     Only you know the right choice.
     
     You can also view the court selection guidance at [mass.gov](https://www.mass.gov/courthouse-locator).
-    
+---
+code: |
+  attachment_temp = []
+  attachment_temp.append( A_affidavit_disclosing_care_or_custody_proceedings0009_attachment)
+  if need_care_custody_addendum:
+    attachment_temp.append(care_or_custody_proceedings_appendix_variable)
+  form_to_file_no_cover = pdf_concatenate(attachment_temp)
+---
+code: |
+  attachment_temp = []
+  attachment_temp.append( A_affidavit_disclosing_care_or_custody_proceedings0009_attachment_preview)  
+  if need_care_custody_addendum:
+    attachment_temp.append(care_or_custody_proceedings_appendix_variable)
+ 
+  form_to_sign = pdf_concatenate(attachment_temp)
+  
