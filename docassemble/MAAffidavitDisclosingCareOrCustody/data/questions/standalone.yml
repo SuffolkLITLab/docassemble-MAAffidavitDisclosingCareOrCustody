@@ -152,7 +152,6 @@ subquestion: |
   % if not defined('email_success') or not email_success:
     ${ action_button_html( url_action('form_delivery_complete'), id_tag="submitToCourt", label="Submit to " + str(courts[0].name), icon=send_icon, size="md", color="primary")}
     
-  Or download/email below:
   % else:
     Your email has already been delivered to ${courts[0]}
     
