@@ -43,7 +43,7 @@ def find_package_data(where='.', package='', exclude=standard_exclude, exclude_d
     return out
 
 setup(name='docassemble.MAAffidavitDisclosingCareOrCustody',
-      version='0.0.7',
+      version='0.0.8',
       description=('Standalone version of the Affidavit Concerning Care or Custody'),
       long_description='# docassemble.MAAffidavitDisclosingCareOrCustody\r\n\r\nStandalone version of the Affidavit Concerning Care or Custody\r\n\r\n## Author\r\n\r\nSystem Administrator, admin@admin.com\r\n\r\n',
       long_description_content_type='text/markdown',

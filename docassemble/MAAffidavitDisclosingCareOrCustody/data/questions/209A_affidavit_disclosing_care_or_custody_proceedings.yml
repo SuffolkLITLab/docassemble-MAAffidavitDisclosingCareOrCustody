@@ -106,13 +106,15 @@ code: |
 #   children[i].previous_addresses.gather()
 #   children[i].child_complete = True
 ---
+comment: |
+  Post MVP I think we can skip subquestion here, it seems a bit wordy, unnecesary?
 id: where children live
 if: len(children_of_both) > 1
 question: |
-  Where do ${children_of_both} live right now?
+  Where do ${children_of_both.familiar()} live right now?
 subquestion: |
   We need to include this information together with the other information
-  about past care or custody cases.
+  about other care or custody cases.
 fields:
   - no label: children_address_screener
     datatype: radio
@@ -132,13 +134,15 @@ fields:
       code: |
         users[0].address.on_one_line(include_unit=True) == other_parties[0].address.on_one_line(include_unit=True)
 ---
+comment: |
+  Post MVP I think we can skip subquestion here, it seems a bit wordy, unnecesary?
 id: where children live
 if: len(children_of_both) <= 1 # Don't think we can ever get to this question w/o children, but just in case!
 question: |
-  Where does ${children_of_both} live right now?
+  Where does ${children_of_both.familiar()} live right now?
 subquestion: |
   We need to include this information together with the other information
-  about past care or custody cases.
+  about other care or custody cases.
 fields:
   - no label: children_address_screener
     datatype: radio
@@ -289,37 +293,6 @@ fields:
       name_suffix()
     required: False      
 list collect: True      
----
-if: |
-  not defined('preferred_court') or preferred_court != 'Housing Court'
-id: court information
-sets:
-  - courts[0].name
-question: |
-  What court is your case being heard in?
-subquestion: |
-  Your case can be heard in these courts: ${comma_and_list(allowed_courts)}.
-  You can try finding your local court by using the [Courthouse Locator](https://www.mass.gov/guides/find-a-courthouse-serving-you).
-  
-  Click ${word("help")} to learn more about choosing a court. This can be complicated in a 209A restraining order.
-fields:
-  - Court name: courts[0]
-    datatype: object
-    choices: macourts.filter_courts(["District Court","Boston Municipal Court", "Probate and Family Court", "Superior Court"])
-continue button field: ask_court_question    
-help: |
-  You can get a 209A restraining order at the District Court near where you live or theProbate and Family Court in your county.  If you live in Boston, you can go to the Boston Municipal Court (BMC) near where you live instead of a District Court. You can also go to the Superior Court in your county.  Most people get 209A restraining orders from District Court, BMC, or Probate and Family Court.  Superior Court restraining orders are rare but may be an option when other available courts are closed due to the COVID-19 crisis. 
-  
-  If you have moved to another town in Massachusetts since the abuse, you can go to the court where you live now or to the court for an address that you had to leave because of the abuse. 
-  
-  Some things to think about when you are deciding which court is better for you are:  
-  
-  #### If the other parent wants to visit your child  
-  The District Court is not supposed to order visitation between the other parent and your child as part of a 209A case. The Probate and Family Court can order visitation in a 209A case.  If you want to get visitation settled right away, you might want to go to the Probate and Family Court to file for the 209A restraining order. If you do not want the court to decide about visitation, you might want to go to the District Court for your 209A restraining order. 
-  #### If the person who abused you is facing criminal charges  
-  If the person who abused you is facing criminal charges related to the domestic violence, you might want to file for your 209A restraining order at the District or Superior Court where that case is. That way, you may be able to work with the same Victim/Witness Advocate for both cases.
-  
-  Read more at: [https://www.masslegalhelp.org/domestic-violence/where-can-i-get-209a](https://www.masslegalhelp.org/domestic-violence/where-can-i-get-209a)
 ---
 code: |
   if 'District' in courts[0].name:
@@ -938,14 +911,12 @@ fields:
 #  - 'Year': year
 ---
 id: prior custody cases screener
-Comment: |
-  User needs the option to say no, they know of no prior custody cases.
 question: |
-  Prior Care or Custody Cases
+  Other care or custody cases
 subquestion: |
-  Do you know about any court cases that
-  had to do with custody or the care of the children?
-  
+  Do you know about any other court cases where the judge made or is making
+  decisions about the care or custody of ${children_of_both}?
+    
   This may include any case that involved:
 
   * custody  
@@ -965,7 +936,7 @@ fields:
   - no label: custody_case_participation
     datatype: radio
     choices:
-      - I have been **part of** another case involving ${comma_and_list(children_of_both, and_string=word("or"))}: participated
+      - I am now or have been **part of** another case involving ${comma_and_list(children_of_both, and_string=word("or"))}: participated
       - I was not part of any other case, but I **know** about another case involving ${comma_and_list(children_of_both, and_string=word("or"))}: know of
       - I don't know about any other cases involving ${comma_and_list(children_of_both, and_string=word("or"))}: no cases    
 ---
@@ -989,7 +960,7 @@ subquestion: |
 
   You will have a chance to add more cases later.
 fields:  
-  - What is the best description of this case (you do not need to be exact): other_care_custody_proceedings[i].case_status
+  - What is the best description of this case? You do not need the exact name.: other_care_custody_proceedings[i].case_status
     choices:
       - A different 209A restraining order: different 209A restraining order
       - Adoption: adoption
@@ -1331,9 +1302,14 @@ columns:
 ---
 id: another care custody case
 question: |
-  Are there any other cases you would like to tell us about?
+  Are there any other cases?
 subquestion: |
-  So far you have told us about ${quantity_noun(len(other_care_custody_proceedings.elements), word("case"))}: 
+  So far you have told the court about
+  % if len(other_care_custody_proceedings.elements) > 1:
+  ${len(other_care_custody_proceedings.elements)} cases: 
+  % else:
+  ${len(other_care_custody_proceedings.elements)} case: 
+  % endif
   ${comma_and_list(other_care_custody_proceedings.elements)}.
 yesno: other_care_custody_proceedings.there_is_another
 ---

@@ -44,6 +44,7 @@ code: |
 code: |
   children_of_both = children
 ---
+id: intro
 continue button field: intro
 question: |
   Affidavit Disclosing Care or Custody
@@ -189,6 +190,9 @@ fields:
     disable others: True
     object labeler: |
       lambda y: '**' + str(y) +' (' + y.address.city + ')**' + '[BR]' + y.address.on_one_line() + '[BR]' + y.description
+    show if: 
+      code: |
+        len(all_matches)      
   - note: |
       Does the list above look wrong? If you think you should file in a
       court we didn't list, choose from the full list below.
