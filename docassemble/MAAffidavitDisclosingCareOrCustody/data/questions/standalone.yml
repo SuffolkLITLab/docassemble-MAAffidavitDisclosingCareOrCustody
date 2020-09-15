@@ -2,6 +2,10 @@
 include:
   - 209A_affidavit_disclosing_care_or_custody_proceedings.yml
 ---
+metadata:
+  title: |
+    Affidavit Concerning Care or Custody
+---
 code: |
   allowed_courts = [
       "Boston Municipal Court",
