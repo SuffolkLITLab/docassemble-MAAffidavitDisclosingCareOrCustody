@@ -1,8 +1,3 @@
-# docassemble.MAAffidavitDisclosingCareOrCustody
+# A Docassemble interview for the Massachusetts Affidavit Disclosing Care or Custody
 
-Standalone version of the Affidavit Concerning Care or Custody
-
-## Author
-
-System Administrator, admin@admin.com
-
+This is a Docassemble interview to complete the Massachusetts Affidavit Disclosing Care or Custody forms online. The live interview can be found at [https://www.courtformsonline.org/dv/#careandcustory](https://www.courtformsonline.org/dv/#careandcustory).
